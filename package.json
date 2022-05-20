@@ -1,0 +1,23 @@
+{
+  "name": "@codexporer.io/expo-auth-screens",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "peerDependencies": {
+    "@expo/vector-icons": "*",
+    "@codexporer.io/expo-appbar": "*",
+    "@codexporer.io/expo-message-dialog": "*",
+    "@codexporer.io/expo-app-snackbar": "*",
+    "@codexporer.io/expo-amplify-auth": "*",
+    "@codexporer.io/expo-keyboard-avoiding-view": "*",
+    "@codexporer.io/expo-loading-dialog": "*",
+    "@react-navigation/stack": "*",
+    "@react-navigation/native": "*",
+    "react": "*",
+    "react-native-paper": "*",
+    "lodash": "*",
+    "styled-components": "*",
+    "react-native": "*",
+    "aws-amplify": "*",
+    "react-sweet-state": "*"
+  }
+}
