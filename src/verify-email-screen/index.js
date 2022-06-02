@@ -14,6 +14,7 @@ import { useMessageDialogActions, MESSAGE_DIALOG_TYPE } from '@codexporer.io/exp
 import { useAppSnackbarActions, APP_SNACKBAR_POSITION } from '@codexporer.io/expo-app-snackbar';
 import { useAuthenticationStateActions } from '@codexporer.io/expo-amplify-auth';
 import trim from 'lodash/trim';
+import { useLoadingDialogActions } from '@codexporer.io/expo-loading-dialog';
 import { useScreenEvents } from '../screen-events';
 import {
     Root,
@@ -23,7 +24,7 @@ import {
     Scroll
 } from './styled';
 
-export const VerifyEmailScreen = ({ route, navigation }) => {
+export const VerifyEmailScreen = ({ navigation, route }) => {
     const email = route.params?.email;
 
     const [, {
@@ -31,6 +32,7 @@ export const VerifyEmailScreen = ({ route, navigation }) => {
         resendSignUpWithUsername
     }] = useAuthenticationStateActions();
     const [, { open, close }] = useMessageDialogActions();
+    const [, { show, hide }] = useLoadingDialogActions();
     const [, { show: showAppSnackbar }] = useAppSnackbarActions();
 
     const [code, setCode] = useState('');
@@ -74,19 +76,25 @@ export const VerifyEmailScreen = ({ route, navigation }) => {
     const onVerifyButtonPressed = async () => {
         onVerifyEmailStart();
         setIsVerifyDisabled(true);
+        show({ message: 'Verifying...' });
         try {
             await confirmSignUpWithUsername({
                 username: trim(username),
                 code
             });
+            hide();
             onVerifyEmailSuccess();
             showAppSnackbar({
                 message: 'Your email has been verified successfully.',
                 duration: 5000,
                 position: APP_SNACKBAR_POSITION.top
             });
-            navigation.navigate('SignIn');
+            navigation.navigate(
+                'SignIn',
+                { signInHasBackAction: route.params?.signInHasBackAction }
+            );
         } catch (error) {
+            hide();
             onVerifyEmailError(error);
             open({
                 title: 'Verification Failed',
@@ -107,10 +115,12 @@ export const VerifyEmailScreen = ({ route, navigation }) => {
     const onResendButtonPressed = async () => {
         onVerifyEmailSendCodeStart();
         setIsResendDisabled(true);
+        show({ message: 'Sending...' });
         try {
             await resendSignUpWithUsername({
                 username: trim(username)
             });
+            hide();
             onVerifyEmailSendCodeSuccess();
             setCode('');
             showAppSnackbar({
@@ -119,6 +129,7 @@ export const VerifyEmailScreen = ({ route, navigation }) => {
                 position: APP_SNACKBAR_POSITION.top
             });
         } catch (error) {
+            hide();
             onVerifyEmailSendCodeError(error);
             open({
                 title: 'Resend Code Failed',

@@ -9,6 +9,7 @@ import {
 } from 'react-native-paper';
 import {
     Appbar,
+    AppbarBackAction,
     AppbarContent
 } from '@codexporer.io/expo-appbar';
 import { useLoadingDialogActions } from '@codexporer.io/expo-loading-dialog';
@@ -47,7 +48,7 @@ const SignInWithAppleIcon = () => {
     );
 };
 
-export const SignInScreen = ({ navigation }) => {
+export const SignInScreen = ({ navigation, route }) => {
     const theme = useTheme();
     const [
         {
@@ -75,6 +76,7 @@ export const SignInScreen = ({ navigation }) => {
         onSignInWithApple: onSignInWithAppleEvent
     } = useScreenEvents();
     const isFocused = useIsFocused();
+    const hasBackAction = !!route.params?.signInHasBackAction;
 
     // When screen is focused
     const screenDisplayDependenciesRef = useRef();
@@ -135,7 +137,12 @@ export const SignInScreen = ({ navigation }) => {
     };
 
     const onVerifyButtonPressed = async () => {
-        navigation.navigate('VerifyEmail', { email: username });
+        navigation.navigate(
+            'VerifyEmail',
+            {
+                email: username,
+                signInHasBackAction: hasBackAction
+            });
         close();
     };
 
@@ -196,13 +203,24 @@ export const SignInScreen = ({ navigation }) => {
         onSignInWithAppleEvent();
     };
 
-    const onOpenSignUpScreen = () => navigation.navigate('SignUp');
+    const onOpenSignUpScreen = () => navigation.navigate(
+        'SignUp',
+        { signInHasBackAction: hasBackAction }
+    );
 
-    const onOpenForgotPasswordScreen = () => navigation.navigate('ForgotPassword');
+    const onOpenForgotPasswordScreen = () => navigation.navigate(
+        'ForgotPassword',
+        { signInHasBackAction: hasBackAction }
+    );
 
     return (
         <Root>
             <Appbar>
+                {hasBackAction && (
+                    <AppbarBackAction
+                        onPress={() => navigation.goBack()}
+                    />
+                )}
                 <AppbarContent
                     title='Sign In'
                 />

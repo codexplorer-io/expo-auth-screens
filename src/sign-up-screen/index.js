@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
 import {
     TextInput,
     Button,
     useTheme
 } from 'react-native-paper';
+import { Hub } from 'aws-amplify';
 import { useIsFocused } from '@react-navigation/native';
 import {
     Appbar,
@@ -11,11 +13,12 @@ import {
     AppbarContent
 } from '@codexporer.io/expo-appbar';
 import { FontAwesome } from '@expo/vector-icons';
-import { useAuthenticationStateActions } from '@codexporer.io/expo-amplify-auth';
+import { useAuthenticationState } from '@codexporer.io/expo-amplify-auth';
 import {
     useMessageDialogActions,
     MESSAGE_DIALOG_TYPE
 } from '@codexporer.io/expo-message-dialog';
+import { useLoadingDialogActions } from '@codexporer.io/expo-loading-dialog';
 import trim from 'lodash/trim';
 import { useScreenEvents } from '../screen-events';
 import {
@@ -44,20 +47,27 @@ const SignInWithAppleIcon = () => {
     );
 };
 
-export const SignUpScreen = ({ navigation }) => {
+export const SignUpScreen = ({ navigation, route }) => {
     const theme = useTheme();
-    const [, {
-        signInWithGoogle,
-        signInWithApple,
-        signUpWithUsername
-    }] = useAuthenticationStateActions();
     const [, { open, close }] = useMessageDialogActions();
-
+    const [, { show, hide }] = useLoadingDialogActions();
+    const [isAuthenticationStarted, setIsAuthenticationStarted] = useState(false);
+    const [currentAppState, setCurrentAppState] = useState();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
     const [isPasswordError, setIsPasswordError] = useState(false);
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false);
+    const [
+        {
+            isAuthenticated
+        },
+        {
+            signInWithGoogle,
+            signInWithApple,
+            signUpWithUsername
+        }
+    ] = useAuthenticationState();
 
     const [isDisabledSignUp, setIsDisabledSignUp] = useState(true);
 
@@ -81,6 +91,45 @@ export const SignUpScreen = ({ navigation }) => {
         }
     }, [isFocused]);
 
+    // Monitor if authentication has started
+    useEffect(() => {
+        const onAuthListener = data => {
+            setIsAuthenticationStarted(data?.payload?.event === 'codeFlow');
+        };
+
+        Hub.listen('auth', onAuthListener);
+
+        return () => {
+            Hub.remove('auth', onAuthListener);
+        };
+    }, []);
+
+    // Set app state (workaround to detect when browser authentication window is closed)
+    useEffect(() => {
+        const onAppStateChange = nextAppState => {
+            setCurrentAppState(nextAppState);
+        };
+
+        AppState.addEventListener('change', onAppStateChange);
+
+        return () => {
+            AppState.removeEventListener('change', onAppStateChange);
+        };
+    }, [setCurrentAppState]);
+
+    // Hide loading if authentication has been cancelled by the user
+    useEffect(() => {
+        if (currentAppState === 'active' && !isAuthenticated && !isAuthenticationStarted) {
+            hide();
+            setCurrentAppState();
+        }
+    }, [currentAppState, hide, isAuthenticated, isAuthenticationStarted]);
+
+    // Hide loading if authentication is complete
+    useEffect(() => {
+        isAuthenticated && hide();
+    }, [isAuthenticated, hide]);
+
     useEffect(() => {
         setIsDisabledSignUp(!(username && password && confirmedPassword) ||
             isPasswordError ||
@@ -92,17 +141,30 @@ export const SignUpScreen = ({ navigation }) => {
         setIsConfirmPasswordError(confirmedPassword.length > 0 && confirmedPassword !== password);
     }, [password, confirmedPassword]);
 
+    const showAuthenticatingDialog = () => {
+        show({ message: 'Signing up...' });
+    };
+
     const onSignUp = async () => {
         onSignUpWithUsernameStart();
         setIsDisabledSignUp(true);
+        showAuthenticatingDialog();
         try {
             await signUpWithUsername({
                 username: trim(username),
                 password
             });
+            hide();
             onSignUpWithUsernameSuccess();
-            navigation.navigate('VerifyEmail', { email: username });
+            navigation.navigate(
+                'VerifyEmail',
+                {
+                    email: username,
+                    signInHasBackAction: route.params?.signInHasBackAction
+                }
+            );
         } catch (error) {
+            hide();
             onSignUpWithUsernameError(error);
             open({
                 title: 'Sign Up Failed',
@@ -121,11 +183,13 @@ export const SignUpScreen = ({ navigation }) => {
     };
 
     const onSignUpWithGoogle = () => {
+        showAuthenticatingDialog();
         signInWithGoogle();
         onSignUpWithGoogleEvent();
     };
 
     const onSignUpWithApple = () => {
+        showAuthenticatingDialog();
         signInWithApple();
         onSignUpWithAppleEvent();
     };

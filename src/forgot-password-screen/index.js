@@ -11,6 +11,7 @@ import {
     AppbarBackAction,
     AppbarContent
 } from '@codexporer.io/expo-appbar';
+import { useLoadingDialogActions } from '@codexporer.io/expo-loading-dialog';
 import { useMessageDialogActions, MESSAGE_DIALOG_TYPE } from '@codexporer.io/expo-message-dialog';
 import { useAppSnackbarActions, APP_SNACKBAR_POSITION } from '@codexporer.io/expo-app-snackbar';
 import { useAuthenticationStateActions } from '@codexporer.io/expo-amplify-auth';
@@ -25,7 +26,7 @@ import {
     TextInputError
 } from './styled';
 
-export const ForgotPasswordScreen = ({ navigation }) => {
+export const ForgotPasswordScreen = ({ navigation, route }) => {
     const theme = useTheme();
 
     const [, {
@@ -33,6 +34,7 @@ export const ForgotPasswordScreen = ({ navigation }) => {
         forgotPasswordSubmitWithUsername
     }] = useAuthenticationStateActions();
     const [, { open, close }] = useMessageDialogActions();
+    const [, { show, hide }] = useLoadingDialogActions();
     const [, { show: showAppSnackbar }] = useAppSnackbarActions();
 
     const [username, setUsername] = useState('');
@@ -84,10 +86,12 @@ export const ForgotPasswordScreen = ({ navigation }) => {
     const onSendCodePressed = async () => {
         onForgotPasswordSendCodeStart();
         setIsSendCodeDisabled(true);
+        show({ message: 'Sending...' });
         try {
             await forgotPasswordWithUsername({
                 username: trim(username)
             });
+            hide();
             onForgotPasswordSendCodeSuccess();
             setCode('');
             showAppSnackbar({
@@ -96,6 +100,7 @@ export const ForgotPasswordScreen = ({ navigation }) => {
                 position: APP_SNACKBAR_POSITION.top
             });
         } catch (error) {
+            hide();
             onForgotPasswordSendCodeError(error);
             open({
                 title: 'Send Code Failed',
@@ -117,20 +122,26 @@ export const ForgotPasswordScreen = ({ navigation }) => {
     const onResetPasswordPressed = async () => {
         onForgotPasswordResetStart();
         setIsResetDisabled(true);
+        show({ message: 'Resetting...' });
         try {
             await forgotPasswordSubmitWithUsername({
                 username: trim(username),
                 code,
                 password
             });
+            hide();
             onForgotPasswordResetSuccess();
             showAppSnackbar({
                 message: 'Your password has been reset successfully.',
                 duration: 5000,
                 position: APP_SNACKBAR_POSITION.top
             });
-            navigation.navigate('SignIn');
+            navigation.navigate(
+                'SignIn',
+                { signInHasBackAction: route.params?.signInHasBackAction }
+            );
         } catch (error) {
+            hide();
             onForgotPasswordResetError(error);
             open({
                 title: 'Reset Password Failed',
