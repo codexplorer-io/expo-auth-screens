@@ -10,6 +10,7 @@
     "@codexporer.io/expo-amplify-auth": "*",
     "@codexporer.io/expo-keyboard-avoiding-view": "*",
     "@codexporer.io/expo-loading-dialog": "*",
+    "@codexporer.io/expo-app-state": "*",
     "@react-navigation/stack": "*",
     "@react-navigation/native": "*",
     "react": "*",

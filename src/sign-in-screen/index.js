@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TouchableOpacity, AppState } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Hub } from 'aws-amplify';
 import {
@@ -13,6 +13,7 @@ import {
     AppbarContent
 } from '@codexporer.io/expo-appbar';
 import { useLoadingDialogActions } from '@codexporer.io/expo-loading-dialog';
+import { useAppState } from '@codexporer.io/expo-app-state';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAuthenticationState } from '@codexporer.io/expo-amplify-auth';
 import {
@@ -63,7 +64,7 @@ export const SignInScreen = ({ navigation, route }) => {
     const [, { open, close }] = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
     const [isAuthenticationStarted, setIsAuthenticationStarted] = useState(false);
-    const [currentAppState, setCurrentAppState] = useState();
+    const appState = useAppState({ shouldListen: true });
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isSignInDisabled, setIsSignInDisabled] = useState(true);
@@ -101,24 +102,12 @@ export const SignInScreen = ({ navigation, route }) => {
         };
     }, []);
 
-    // Set app state (workaround to detect when browser authentication window is closed)
-    useEffect(() => {
-        const handler = AppState.addEventListener('change', nextAppState => {
-            setCurrentAppState(nextAppState);
-        });
-
-        return () => {
-            handler.remove();
-        };
-    }, [setCurrentAppState]);
-
     // Hide loading if authentication has been cancelled by the user
     useEffect(() => {
-        if (currentAppState === 'active' && !isAuthenticated && !isAuthenticationStarted) {
+        if (appState.isActive && !isAuthenticated && !isAuthenticationStarted) {
             hide();
-            setCurrentAppState();
         }
-    }, [currentAppState, hide, isAuthenticated, isAuthenticationStarted]);
+    }, [appState.isActive, hide, isAuthenticated, isAuthenticationStarted]);
 
     // Hide loading if authentication is complete
     useEffect(() => {

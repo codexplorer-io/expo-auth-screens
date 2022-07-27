@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AppState } from 'react-native';
 import {
     TextInput,
     Button,
@@ -19,6 +18,7 @@ import {
     MESSAGE_DIALOG_TYPE
 } from '@codexporer.io/expo-message-dialog';
 import { useLoadingDialogActions } from '@codexporer.io/expo-loading-dialog';
+import { useAppState } from '@codexporer.io/expo-app-state';
 import trim from 'lodash/trim';
 import { useScreenEvents } from '../screen-events';
 import {
@@ -52,7 +52,7 @@ export const SignUpScreen = ({ navigation, route }) => {
     const [, { open, close }] = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
     const [isAuthenticationStarted, setIsAuthenticationStarted] = useState(false);
-    const [currentAppState, setCurrentAppState] = useState();
+    const appState = useAppState({ shouldListen: true });
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmedPassword, setConfirmedPassword] = useState('');
@@ -104,26 +104,12 @@ export const SignUpScreen = ({ navigation, route }) => {
         };
     }, []);
 
-    // Set app state (workaround to detect when browser authentication window is closed)
-    useEffect(() => {
-        const onAppStateChange = nextAppState => {
-            setCurrentAppState(nextAppState);
-        };
-
-        AppState.addEventListener('change', onAppStateChange);
-
-        return () => {
-            AppState.removeEventListener('change', onAppStateChange);
-        };
-    }, [setCurrentAppState]);
-
     // Hide loading if authentication has been cancelled by the user
     useEffect(() => {
-        if (currentAppState === 'active' && !isAuthenticated && !isAuthenticationStarted) {
+        if (appState.isActive === 'active' && !isAuthenticated && !isAuthenticationStarted) {
             hide();
-            setCurrentAppState();
         }
-    }, [currentAppState, hide, isAuthenticated, isAuthenticationStarted]);
+    }, [appState.isActive, hide, isAuthenticated, isAuthenticationStarted]);
 
     // Hide loading if authentication is complete
     useEffect(() => {
