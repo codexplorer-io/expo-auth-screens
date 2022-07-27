@@ -103,14 +103,12 @@ export const SignInScreen = ({ navigation, route }) => {
 
     // Set app state (workaround to detect when browser authentication window is closed)
     useEffect(() => {
-        const onAppStateChange = nextAppState => {
+        const handler = AppState.addEventListener('change', nextAppState => {
             setCurrentAppState(nextAppState);
-        };
-
-        AppState.addEventListener('change', onAppStateChange);
+        });
 
         return () => {
-            AppState.removeEventListener('change', onAppStateChange);
+            handler.remove();
         };
     }, [setCurrentAppState]);
 
