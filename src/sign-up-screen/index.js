@@ -199,6 +199,11 @@ export const SignUpScreen = ({ navigation, route }) => {
                             label='Email'
                             value={username}
                             onChangeText={setUsername}
+                            textContentType='emailAddress'
+                            keyboardType='email-address'
+                            autoCapitalize='none'
+                            autoCorrect={false}
+                            autoCompleteType='email'
                         />
                         <Spacer />
                         <TextInput
@@ -207,6 +212,8 @@ export const SignUpScreen = ({ navigation, route }) => {
                             secureTextEntry
                             value={password}
                             onChangeText={setPassword}
+                            autoCapitalize='none'
+                            autoCorrect={false}
                             error={isPasswordError}
                         />
                         {
@@ -223,6 +230,8 @@ export const SignUpScreen = ({ navigation, route }) => {
                             secureTextEntry
                             value={confirmedPassword}
                             onChangeText={setConfirmedPassword}
+                            autoCapitalize='none'
+                            autoCorrect={false}
                             error={isConfirmPasswordError}
                         />
                         {

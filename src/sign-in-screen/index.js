@@ -221,6 +221,11 @@ export const SignInScreen = ({ navigation, route }) => {
                             label='Email'
                             value={username}
                             onChangeText={setUsername}
+                            textContentType='emailAddress'
+                            keyboardType='email-address'
+                            autoCapitalize='none'
+                            autoCorrect={false}
+                            autoCompleteType='email'
                         />
                         <Spacer />
                         <TextInput
@@ -229,6 +234,8 @@ export const SignInScreen = ({ navigation, route }) => {
                             secureTextEntry
                             value={password}
                             onChangeText={setPassword}
+                            autoCapitalize='none'
+                            autoCorrect={false}
                         />
                         <Spacer />
                         <Button
