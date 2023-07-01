@@ -61,7 +61,7 @@ export const SignInScreen = ({ navigation, route }) => {
             signInWithUsername
         }
     ] = useAuthenticationState();
-    const [, { open, close }] = useMessageDialogActions();
+    const { open, close } = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
     const [isAuthenticationStarted, setIsAuthenticationStarted] = useState(false);
     const appState = useAppState({ shouldListen: true });

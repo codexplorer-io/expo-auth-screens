@@ -31,7 +31,7 @@ export const VerifyEmailScreen = ({ navigation, route }) => {
         confirmSignUpWithUsername,
         resendSignUpWithUsername
     }] = useAuthenticationStateActions();
-    const [, { open, close }] = useMessageDialogActions();
+    const { open, close } = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
     const [, { show: showAppSnackbar }] = useAppSnackbarActions();
 

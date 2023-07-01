@@ -33,7 +33,7 @@ export const ForgotPasswordScreen = ({ navigation, route }) => {
         forgotPasswordWithUsername,
         forgotPasswordSubmitWithUsername
     }] = useAuthenticationStateActions();
-    const [, { open, close }] = useMessageDialogActions();
+    const { open, close } = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
     const [, { show: showAppSnackbar }] = useAppSnackbarActions();
 

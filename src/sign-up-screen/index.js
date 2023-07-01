@@ -49,7 +49,7 @@ const SignInWithAppleIcon = () => {
 
 export const SignUpScreen = ({ navigation, route }) => {
     const theme = useTheme();
-    const [, { open, close }] = useMessageDialogActions();
+    const { open, close } = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
     const [isAuthenticationStarted, setIsAuthenticationStarted] = useState(false);
     const appState = useAppState({ shouldListen: true });
