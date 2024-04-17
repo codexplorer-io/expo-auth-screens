@@ -4,7 +4,6 @@ import {
     Button,
     useTheme
 } from 'react-native-paper';
-import { Hub } from 'aws-amplify';
 import { useIsFocused } from '@react-navigation/native';
 import {
     Appbar,
@@ -51,7 +50,6 @@ export const SignUpScreen = ({ navigation, route }) => {
     const theme = useTheme();
     const { open, close } = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
-    const [isAuthenticationStarted, setIsAuthenticationStarted] = useState(false);
     const appState = useAppState({ shouldListen: true });
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -91,25 +89,12 @@ export const SignUpScreen = ({ navigation, route }) => {
         }
     }, [isFocused]);
 
-    // Monitor if authentication has started
-    useEffect(() => {
-        const onAuthListener = data => {
-            setIsAuthenticationStarted(data?.payload?.event === 'codeFlow');
-        };
-
-        Hub.listen('auth', onAuthListener);
-
-        return () => {
-            Hub.remove('auth', onAuthListener);
-        };
-    }, []);
-
     // Hide loading if authentication has been cancelled by the user
     useEffect(() => {
-        if (appState.isActive === 'active' && !isAuthenticated && !isAuthenticationStarted) {
+        if (appState.isActive === 'active' && !isAuthenticated) {
             hide();
         }
-    }, [appState.isActive, hide, isAuthenticated, isAuthenticationStarted]);
+    }, [appState.isActive, hide, isAuthenticated]);
 
     // Hide loading if authentication is complete
     useEffect(() => {

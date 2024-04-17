@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "peerDependencies": {
+    "@aws-amplify/rtn-web-browser": "*",
     "@expo/vector-icons": "*",
     "@codexporer.io/expo-appbar": "*",
     "@codexporer.io/expo-message-dialog": "*",

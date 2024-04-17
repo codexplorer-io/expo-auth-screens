@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { Hub } from 'aws-amplify';
 import {
     TextInput,
     Button,
@@ -63,7 +62,6 @@ export const SignInScreen = ({ navigation, route }) => {
     ] = useAuthenticationState();
     const { open, close } = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
-    const [isAuthenticationStarted, setIsAuthenticationStarted] = useState(false);
     const appState = useAppState({ shouldListen: true });
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -89,25 +87,12 @@ export const SignInScreen = ({ navigation, route }) => {
         }
     }, [isFocused]);
 
-    // Monitor if authentication has started
-    useEffect(() => {
-        const onAuthListener = data => {
-            setIsAuthenticationStarted(data?.payload?.event === 'codeFlow');
-        };
-
-        Hub.listen('auth', onAuthListener);
-
-        return () => {
-            Hub.remove('auth', onAuthListener);
-        };
-    }, []);
-
     // Hide loading if authentication has been cancelled by the user
     useEffect(() => {
-        if (appState.isActive && !isAuthenticated && !isAuthenticationStarted) {
+        if (appState.isActive && !isAuthenticated) {
             hide();
         }
-    }, [appState.isActive, hide, isAuthenticated, isAuthenticationStarted]);
+    }, [appState.isActive, hide, isAuthenticated]);
 
     // Hide loading if authentication is complete
     useEffect(() => {
