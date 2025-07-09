@@ -169,8 +169,8 @@ export const ForgotPasswordScreen = ({ navigation, route }) => {
                     title='Forgot Password'
                 />
             </Appbar>
-            <KeyboardAvoiding>
-                <SafeArea>
+            <KeyboardAvoiding hasScroll>
+                <SafeArea edges={['right', 'bottom', 'left']}>
                     <Scroll>
                         <Spacer />
                         <Text>

@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import { KeyboardAvoidingView } from '@codexporer.io/expo-keyboard-avoiding-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const Root = styled.View`
     display: flex;
@@ -12,7 +13,7 @@ export const KeyboardAvoiding = styled(KeyboardAvoidingView)`
     flex: 1;
 `;
 
-export const SafeArea = styled.SafeAreaView`
+export const SafeArea = styled(SafeAreaView)`
     flex: 1;
 `;
 

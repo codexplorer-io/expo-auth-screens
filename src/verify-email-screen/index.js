@@ -158,8 +158,8 @@ export const VerifyEmailScreen = ({ navigation, route }) => {
                     title='Verify Email'
                 />
             </Appbar>
-            <KeyboardAvoiding>
-                <SafeArea>
+            <KeyboardAvoiding hasScroll>
+                <SafeArea edges={['right', 'bottom', 'left']}>
                     <Scroll>
                         <Spacer />
                         <Text>

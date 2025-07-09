@@ -175,8 +175,8 @@ export const SignUpScreen = ({ navigation, route }) => {
                     title='Sign Up'
                 />
             </Appbar>
-            <KeyboardAvoiding>
-                <SafeArea>
+            <KeyboardAvoiding hasScroll>
+                <SafeArea edges={['right', 'bottom', 'left']}>
                     <Scroll>
                         <Spacer />
                         <TextInput

@@ -20,6 +20,7 @@
     "styled-components": "*",
     "react-native": "*",
     "aws-amplify": "*",
-    "react-sweet-state": "*"
+    "react-sweet-state": "*",
+    "react-native-safe-area-context": "*"
   }
 }
