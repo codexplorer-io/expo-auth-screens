@@ -109,7 +109,7 @@ export const SignInScreen = ({ navigation, route }) => {
     };
 
     const onVerifyButtonPressed = async () => {
-        navigation.navigate(
+        navigation.push(
             'VerifyEmail',
             {
                 email: username,
@@ -175,12 +175,12 @@ export const SignInScreen = ({ navigation, route }) => {
         onSignInWithAppleEvent();
     };
 
-    const onOpenSignUpScreen = () => navigation.navigate(
+    const onOpenSignUpScreen = () => navigation.push(
         'SignUp',
         { signInHasBackAction: hasBackAction }
     );
 
-    const onOpenForgotPasswordScreen = () => navigation.navigate(
+    const onOpenForgotPasswordScreen = () => navigation.push(
         'ForgotPassword',
         { signInHasBackAction: hasBackAction }
     );

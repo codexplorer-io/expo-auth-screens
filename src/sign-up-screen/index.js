@@ -127,7 +127,7 @@ export const SignUpScreen = ({ navigation, route }) => {
             });
             hide();
             onSignUpWithUsernameSuccess();
-            navigation.navigate(
+            navigation.push(
                 'VerifyEmail',
                 {
                     email: username,

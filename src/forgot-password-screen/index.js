@@ -136,7 +136,7 @@ export const ForgotPasswordScreen = ({ navigation, route }) => {
                 duration: 5000,
                 position: APP_SNACKBAR_POSITION.top
             });
-            navigation.navigate(
+            navigation.push(
                 'SignIn',
                 { signInHasBackAction: route.params?.signInHasBackAction }
             );
