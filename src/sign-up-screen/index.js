@@ -11,7 +11,7 @@ import {
     AppbarContent
 } from '@codexporer.io/expo-appbar';
 import { FontAwesome } from '@expo/vector-icons';
-import { useAuthenticationState } from '@codexporer.io/expo-amplify-auth';
+import { useAuthenticationState, useAuthenticationStateActions } from '@codexporer.io/expo-amplify-auth';
 import {
     useMessageDialogActions,
     MESSAGE_DIALOG_TYPE
@@ -56,16 +56,12 @@ export const SignUpScreen = ({ navigation, route }) => {
     const [confirmedPassword, setConfirmedPassword] = useState('');
     const [isPasswordError, setIsPasswordError] = useState(false);
     const [isConfirmPasswordError, setIsConfirmPasswordError] = useState(false);
-    const [
-        {
-            isAuthenticated
-        },
-        {
-            signInWithGoogle,
-            signInWithApple,
-            signUpWithUsername
-        }
-    ] = useAuthenticationState();
+    const { isAuthenticated } = useAuthenticationState();
+    const {
+        signInWithGoogle,
+        signInWithApple,
+        signUpWithUsername
+    } = useAuthenticationStateActions();
 
     const [isDisabledSignUp, setIsDisabledSignUp] = useState(true);
 

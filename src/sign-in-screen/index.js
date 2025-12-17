@@ -14,7 +14,10 @@ import {
 import { useLoadingDialogActions } from '@codexporer.io/expo-loading-dialog';
 import { useAppState } from '@codexporer.io/expo-app-state';
 import { FontAwesome } from '@expo/vector-icons';
-import { useAuthenticationState } from '@codexporer.io/expo-amplify-auth';
+import {
+    useAuthenticationState,
+    useAuthenticationStateActions
+} from '@codexporer.io/expo-amplify-auth';
 import {
     useMessageDialogActions,
     MESSAGE_DIALOG_TYPE
@@ -50,16 +53,12 @@ const SignInWithAppleIcon = () => {
 
 export const SignInScreen = ({ navigation, route }) => {
     const theme = useTheme();
-    const [
-        {
-            isAuthenticated
-        },
-        {
-            signInWithGoogle,
-            signInWithApple,
-            signInWithUsername
-        }
-    ] = useAuthenticationState();
+    const { isAuthenticated } = useAuthenticationState();
+    const {
+        signInWithGoogle,
+        signInWithApple,
+        signInWithUsername
+    } = useAuthenticationStateActions();
     const { open, close } = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
     const appState = useAppState({ shouldListen: true });

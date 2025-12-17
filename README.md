@@ -92,7 +92,7 @@ const authFlowScreens = ['SignIn'];
 export const AppScreensContainer = () => {
     const navigationRef = useRef();
     const currentNavigationRef = navigationRef.current;
-    const [{ isAuthenticated }] = useAuthenticationState();
+    const { isAuthenticated } = useAuthenticationState();
 
     useEffect(() => {
         if (!currentNavigationRef) {

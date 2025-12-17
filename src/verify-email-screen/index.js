@@ -27,10 +27,10 @@ import {
 export const VerifyEmailScreen = ({ navigation, route }) => {
     const email = route.params?.email;
 
-    const [, {
+    const {
         confirmSignUpWithUsername,
         resendSignUpWithUsername
-    }] = useAuthenticationStateActions();
+    } = useAuthenticationStateActions();
     const { open, close } = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
     const [, { show: showAppSnackbar }] = useAppSnackbarActions();

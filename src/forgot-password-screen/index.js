@@ -29,10 +29,10 @@ import {
 export const ForgotPasswordScreen = ({ navigation, route }) => {
     const theme = useTheme();
 
-    const [, {
+    const {
         forgotPasswordWithUsername,
         forgotPasswordSubmitWithUsername
-    }] = useAuthenticationStateActions();
+    } = useAuthenticationStateActions();
     const { open, close } = useMessageDialogActions();
     const [, { show, hide }] = useLoadingDialogActions();
     const [, { show: showAppSnackbar }] = useAppSnackbarActions();
